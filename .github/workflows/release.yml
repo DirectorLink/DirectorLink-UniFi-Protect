@@ -1,0 +1,42 @@
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Tag must match VERSION
+        run: |
+          VERSION="$(tr -d '[:space:]' < VERSION)"
+          if [ "v$VERSION" != "$GITHUB_REF_NAME" ]; then
+            echo "Tag $GITHUB_REF_NAME does not match VERSION file ($VERSION)"
+            exit 1
+          fi
+      - name: Install test runtime
+        run: |
+          pip install lupa
+          sudo apt-get install -y lua5.1
+      - name: Tests
+        run: cd tests && python test_static.py && python test_xml.py && python test_protocol.py && python test_hub.py && python test_camera.py && python test_integration.py
+      - name: Build
+        run: python tools/build.py
+      - name: Publish GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          VERSION="$(tr -d '[:space:]' < VERSION)"
+          NOTES="docs/releases/v$VERSION.md"
+          ARGS=(--title "DirectorLink · UniFi Protect $VERSION")
+          if [ -f "$NOTES" ]; then ARGS+=(--notes-file "$NOTES"); else ARGS+=(--generate-notes); fi
+          case "$VERSION" in *-*) ARGS+=(--prerelease) ;; esac
+          gh release create "$GITHUB_REF_NAME" dist/DirectorLink-UniFi-Protect.c4z dist/DirectorLink-UniFi-Protect-Camera.c4z dist/SHA256SUMS.txt "${ARGS[@]}"

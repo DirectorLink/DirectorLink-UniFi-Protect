@@ -1,0 +1,4 @@
+# build output (attach the .c4z to a release instead of committing it)
+dist/
+__pycache__/
+*.pyc

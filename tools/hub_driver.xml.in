@@ -1,0 +1,188 @@
+<devicedata>
+	<copyright>Copyright 2026 DirectorLink</copyright>
+	<creator>DirectorLink</creator>
+	<manufacturer>Ubiquiti</manufacturer>
+	<name>DirectorLink · UniFi Protect</name>
+	<model>UniFi Protect Console</model>
+	<created>10/05/2026 00:00</created>
+	<!-- tools/build.py stamps modified and version from the VERSION file -->
+	<!-- Generated from tools/hub_driver.xml.in by tools/gen_hub_xml.py: edit the template, not src/hub/driver.xml -->
+	<modified>10/05/2026 00:00</modified>
+	<version>0</version>
+	<small image_source="c4z">icons/device_sm.png</small>
+	<large image_source="c4z">icons/device_lg.png</large>
+	<control>lua_gen</control>
+	<controlmethod>ip</controlmethod>
+	<driver>DriverWorks</driver>
+	<composer_categories>
+		<category>Cameras</category>
+	</composer_categories>
+	<!-- Never change or remove proxies, connection ids or event ids in later versions. -->
+	<proxies qty="1">
+		<proxy proxybindingid="5001" name="UniFi Protect Hub" primary="True" image_source="c4z" small_image="icons/device_sm.png" large_image="icons/device_lg.png">uibutton</proxy>
+	</proxies>
+
+	<capabilities>
+		<!-- The hub's touchscreen tile (alerts on/off for every camera): the icon follows the state of all cameras -->
+@@NAVIGATOR_ICONS@@
+	</capabilities>
+
+	<notification_attachment_provider>true</notification_attachment_provider>
+	<notification_attachments>
+		<attachment>
+			<id>1001</id>
+			<type>IMAGE_JPEG</type>
+			<description>Snapshot from the camera that raised the alert or rang</description>
+			<source>MEMORY</source>
+		</attachment>
+		<attachment>
+			<id>1002</id>
+			<type>IMAGE_JPEG</type>
+			<description>Live snapshot from the last alerting or ringing camera</description>
+			<source>URL</source>
+		</attachment>
+	</notification_attachments>
+
+	<events>
+		<event><id>1</id><name>Camera Alert</name><description>When any camera raises an alert (variables LAST_ALERT_CAMERA, LAST_ALERT_TYPE)</description></event>
+		<event><id>2</id><name>Doorbell Ring</name><description>When any doorbell is pressed (variables LAST_RING_CAMERA, LAST_RING_TIME)</description></event>
+		<event><id>3</id><name>Camera Offline</name><description>When any camera goes offline (variable LAST_OFFLINE_CAMERA)</description></event>
+		<event><id>4</id><name>Camera Online</name><description>When an offline camera comes back</description></event>
+		<event><id>5</id><name>Alerts On</name><description>When camera alerts turn on</description></event>
+		<event><id>6</id><name>Alerts Off</name><description>When camera alerts turn off or are snoozed</description></event>
+		<event><id>7</id><name>New Cameras Found</name><description>When the console has cameras that are not in the project yet</description></event>
+		<event><id>8</id><name>Console Offline</name><description>When the UniFi console stops answering</description></event>
+		<event><id>9</id><name>Console Online</name><description>When the UniFi console answers again</description></event>
+	</events>
+
+	<conditionals>
+		<conditional>
+			<id>1</id><name>ALERTS_ENABLED</name><type>BOOL</type>
+			<condition_statement>Camera alerts are</condition_statement><description>NAME camera alerts are STRING</description>
+			<true_text>On</true_text><false_text>Off</false_text>
+		</conditional>
+		<conditional>
+			<id>2</id><name>ALERT_ACTIVE</name><type>BOOL</type>
+			<condition_statement>An alert is</condition_statement><description>NAME alert is STRING</description>
+			<true_text>Active</true_text><false_text>Clear</false_text>
+		</conditional>
+		<conditional>
+			<id>3</id><name>ALL_ONLINE</name><type>BOOL</type>
+			<condition_statement>All cameras are</condition_statement><description>NAME all cameras are STRING</description>
+			<true_text>Online</true_text><false_text>Not all online</false_text>
+		</conditional>
+		<conditional>
+			<id>4</id><name>CONSOLE_ONLINE</name><type>BOOL</type>
+			<condition_statement>The console is</condition_statement><description>NAME console is STRING</description>
+			<true_text>Online</true_text><false_text>Offline</false_text>
+		</conditional>
+		<conditional>
+			<id>5</id><name>LAST_ALERT_TYPE</name><type>LIST</type>
+			<condition_statement>Last alert</condition_statement><description>NAME last alert LOGIC STRING</description>
+			<items>
+				<item>Person</item><item>Vehicle</item><item>Animal</item><item>Package</item><item>Face</item>
+				<item>License Plate</item><item>Line Crossing</item><item>Intrusion</item><item>Motion</item>
+			</items>
+		</conditional>
+	</conditionals>
+
+	<config>
+		<identify_text>Add this driver once, enter the console's address and an API key, then use Actions: Add New Cameras.</identify_text>
+		<script file="driver.lua" jit="1"/>
+		<documentation file="www/documentation.html"/>
+
+		<properties>
+			<property><name>Status Section</name><type>LABEL</type><default>Status</default></property>
+			<property><name>Status</name><type>STRING</type><readonly>true</readonly><default>Starting...</default></property>
+			<property><name>Console</name><type>STRING</type><readonly>true</readonly><default></default></property>
+			<property><name>Cameras</name><type>STRING</type><readonly>true</readonly><default></default></property>
+			<property><name>Found On Console</name><type>STRING</type><readonly>true</readonly><default></default></property>
+			<property><name>Event Connection</name><type>STRING</type><readonly>true</readonly><default></default></property>
+			<property><name>Picture Server</name><type>STRING</type><readonly>true</readonly><default></default></property>
+			<property><name>Last Error</name><type>STRING</type><readonly>true</readonly><default></default></property>
+			<property><name>Driver Version</name><type>STRING</type><readonly>true</readonly><default></default></property>
+
+			<property><name>Console Section</name><type>LABEL</type><default>UniFi console</default></property>
+			<property>
+				<name>Console Address</name><type>STRING</type><readonly>false</readonly><default></default>
+				<tooltip>The IP address of the UniFi console that runs UniFi Protect (Dream Machine, UNVR, Cloud Key Gen2+), for example 192.168.50.1.</tooltip>
+			</property>
+			<property>
+				<name>API Key</name><type>STRING</type><password>true</password><readonly>false</readonly><default></default>
+				<tooltip>Create it in the UniFi console: Settings > Control Plane > Integrations > Create API Key. Only this console ever receives it.</tooltip>
+			</property>
+
+			<property><name>Cameras Section</name><type>LABEL</type><default>Cameras</default></property>
+			<property>
+				<name>Live Video</name><type>LIST</type><readonly>false</readonly><default>RTSP (port 7447)</default>
+				<items><item>RTSP (port 7447)</item><item>RTSPS (port 7441)</item></items>
+				<tooltip>The console's stream that Control4 plays. RTSP (port 7447, the default) is what Control4 apps play best. RTSPS (port 7441) is encrypted, but Control4 apps may not play it.</tooltip>
+			</property>
+			<property>
+				<name>Create Streams</name><type>LIST</type><readonly>false</readonly><default>Automatic</default>
+				<items><item>Automatic</item><item>Off</item></items>
+				<tooltip>Automatic: when a camera has no stream (High, Medium, Low), the hub switches it on in UniFi Protect, the same as turning on RTSP for the camera in Protect. Off: only streams already on are used.</tooltip>
+			</property>
+			<property>
+				<name>Ignored Cameras</name><type>STRING</type><readonly>false</readonly><default></default>
+				<tooltip>Comma-separated names (as in UniFi Protect) or camera ids that Add New Cameras skips.</tooltip>
+			</property>
+			<property>
+				<name>Picture Server Port</name><type>RANGED_INTEGER</type><minimum>1024</minimum><maximum>65535</maximum><default>47080</default><readonly>false</readonly>
+				<tooltip>The port of the hub's picture server on the controller. Control4 apps and DirectorLink take each camera's pictures from it with that camera's own login. Change it only if another driver uses this port.</tooltip>
+			</property>
+
+			<property><name>Alerts Section</name><type>LABEL</type><default>Alerts</default></property>
+			<property>
+				<name>Alerts</name><type>LIST</type><readonly>false</readonly><default>On</default>
+				<items><item>On</item><item>Off</item></items>
+				<tooltip>Master switch for every camera (same as tapping the hub's tile on a touchscreen). Doorbell rings are not alerts: they always ring.</tooltip>
+			</property>
+			<property>
+				<name>Default Alert On</name><type>LIST</type><readonly>false</readonly><default>Any detection</default>
+				<items><item>Any detection</item><item>People and vehicles</item><item>People only</item></items>
+				<tooltip>Alert On setting given to cameras when they are added. Each camera can be changed later.</tooltip>
+			</property>
+			<property>
+				<name>Snapshot With Alerts</name><type>LIST</type><readonly>false</readonly><default>Yes</default>
+				<items><item>Yes</item><item>No</item></items>
+				<tooltip>Yes: Camera Alert and Doorbell Ring wait up to 1.5 s for that camera's picture, so a notification shows the picture of its own alert or ring.</tooltip>
+			</property>
+
+			<property><name>Advanced Section</name><type>LABEL</type><default>Advanced</default></property>
+			<property>
+				<name>Log Level</name><type>LIST</type><readonly>false</readonly><default>Info</default>
+				<items><item>Off</item><item>Errors</item><item>Warnings</item><item>Info</item><item>Debug</item><item>Trace</item></items>
+				<tooltip>Also sets every camera's Log Level. Debug logs every request and event (never the API key or stream tokens) to the Lua tab and Director's driver log.</tooltip>
+			</property>
+		</properties>
+
+		<actions>
+			<action><name>Connect Now</name><command>Refresh</command></action>
+			<action><name>Add New Cameras</name><command>AddCameras</command></action>
+			<action><name>Update Camera Names</name><command>UpdateNames</command></action>
+			<action><name>Send Settings To Cameras</name><command>SendSettings</command></action>
+			<action><name>Print Diagnostics</name><command>Diagnostics</command></action>
+		</actions>
+
+		<commands>
+			<command>
+				<name>SET_ALERTS</name><description>Set camera alerts to PARAM1</description>
+				<params><param><name>State</name><type>LIST</type><items><item>On</item><item>Off</item><item>Toggle</item></items></param></params>
+			</command>
+			<command>
+				<name>SNOOZE_ALERTS</name><description>Snooze camera alerts for PARAM1 minutes</description>
+				<params><param><name>Minutes</name><type>RANGED_INTEGER</type><minimum>1</minimum><maximum>1440</maximum></param></params>
+			</command>
+			<command><name>REFRESH</name><description>Connect to the UniFi console again and read its cameras</description></command>
+		</commands>
+	</config>
+
+	<connections>
+		<connection>
+			<id>5001</id><facing>6</facing><connectionname>UniFi Protect Hub</connectionname><type>2</type>
+			<consumer>False</consumer><audiosource>False</audiosource><videosource>False</videosource><linelevel>False</linelevel>
+			<classes><class><classname>UIBUTTON</classname></class></classes>
+		</connection>
+	</connections>
+</devicedata>

@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DirectorLink · UniFi Protect</title>
+<style>
+  :root { --cyan:#28d2ff; --cyan-ink:#0a7fa3; --ink:#1f2328; --muted:#5d6670; --bg:#ffffff; --panel:#f4f6f8; --line:#dde3e8; --hero:#23272b; --hero2:#3a3f44; }
+  @media (prefers-color-scheme: dark) { :root { --ink:#e8ecef; --muted:#9aa4ad; --bg:#15181b; --panel:#1e2226; --line:#30363c; --cyan-ink:#28d2ff; } }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink); font:14px/1.55 "Segoe UI", -apple-system, Arial, sans-serif; }
+  a { color:var(--cyan-ink); }
+  .hero { background:linear-gradient(135deg, var(--hero), var(--hero2)); color:#fff; padding:22px 24px; display:flex; gap:18px; align-items:center; }
+  .hero img { width:84px; height:84px; flex:none; }
+  .hero h1 { margin:0; font-size:22px; font-weight:600; }
+  .hero .tag { color:var(--cyan); font-weight:600; margin:2px 0 6px; }
+  .hero p { margin:0; color:#c9d1d8; }
+  .hero p.url { color:#fff; margin:0 0 6px; font-weight:600; }
+  .badge { display:inline-block; background:var(--cyan); color:#06222b; font-size:11px; font-weight:700; padding:1px 8px; border-radius:10px; margin-left:8px; vertical-align:3px; }
+  main { max-width:920px; padding:8px 24px 32px; }
+  h2 { font-size:17px; margin:28px 0 10px; padding-left:10px; border-left:4px solid var(--cyan); }
+  h3 { font-size:14px; margin:18px 0 6px; }
+  .muted { color:var(--muted); }
+  .links { margin:14px 0 0; padding:10px 14px; background:var(--panel); border:1px solid var(--line); border-radius:8px; }
+  table { border-collapse:collapse; width:100%; margin:8px 0; }
+  th, td { border-bottom:1px solid var(--line); padding:6px 8px; text-align:left; vertical-align:top; }
+  th { background:var(--panel); font-weight:600; }
+  code { background:var(--panel); border:1px solid var(--line); padding:0 4px; border-radius:4px; font-size:12.5px; }
+  .states { display:grid; grid-template-columns:repeat(auto-fill, minmax(140px, 1fr)); gap:12px; margin:10px 0; }
+  .state { background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:12px; text-align:center; }
+  .state img { width:72px; height:72px; }
+  .state b { display:block; margin-top:6px; }
+  .state span { color:var(--muted); font-size:12.5px; }
+  .steps { counter-reset:step; list-style:none; padding:0; margin:8px 0; }
+  .steps li { counter-increment:step; position:relative; padding:8px 10px 8px 44px; margin:6px 0; background:var(--panel); border:1px solid var(--line); border-radius:8px; }
+  .steps li::before { content:counter(step); position:absolute; left:10px; top:8px; width:24px; height:24px; border-radius:50%; background:var(--cyan); color:#06222b; font-weight:700; text-align:center; line-height:24px; font-size:12.5px; }
+  .note { border-left:3px solid var(--cyan); background:var(--panel); padding:8px 12px; border-radius:0 8px 8px 0; }
+</style>
+</head>
+<body>
+<div class="hero">
+  <img src="icons/tile/on_300.png" alt="">
+  <div>
+    <h1>DirectorLink &middot; UniFi Protect <span class="badge">BETA</span></h1>
+    <div class="tag">Free, open-source Control4 driver for UniFi Protect cameras and doorbells. Part of DirectorLink Drivers.</div>
+    <p class="url">https://directorlink.io/drivers/unifi-protect</p>
+    <p>Connects one UniFi console (Dream Machine, UNVR, Cloud Key Gen2+) with an API key, adds its cameras and doorbells to the project, and gives the home one alerts tile.</p>
+  </div>
+</div>
+<main>
+<div class="links">Free. No subscription, no license key, no account with us. Downloads, updates and help: see the address above.</div>
+
+<p class="note"><b>Beta.</b> These drivers follow Ubiquiti's published Protect Integration API exactly, but they have not yet been confirmed on a real UniFi system. Please share your driver log (set <b>Log Level</b> to <i>Debug</i> and run <b>Print Diagnostics</b>) so pictures, video, alerts and rings can be confirmed.</p>
+
+<h2>Set up every camera in three steps</h2>
+<ol class="steps">
+  <li><b>Upload both drivers</b> with <i>Driver &gt; Add or Update Driver or Agent</i>: <code>DirectorLink-UniFi-Protect.c4z</code> and <code>DirectorLink-UniFi-Protect-Camera.c4z</code>. Keep these exact file names: a "(1).c4z" copy installs as a separate driver. Search <i>DirectorLink</i> and add <b>DirectorLink &middot; UniFi Protect</b> to the room where new cameras should appear. It shows in the project as <b>UniFi Protect Hub</b>.</li>
+  <li><b>Make an API key</b> in the UniFi console: <i>Settings &gt; Control Plane &gt; Integrations &gt; Create API Key</i>. In the hub's properties, enter the console's <b>Console Address</b> (its IP address) and paste the <b>API Key</b>. <i>Status</i> shows <b>Connected</b> and <i>Found On Console</i> lists the cameras.</li>
+  <li>Run <b>Actions &gt; Add New Cameras</b>. Each camera and doorbell is added with its UniFi name and set up completely: pictures, live video, events. Then drag each camera to its room.</li>
+</ol>
+<p class="note">Cameras added to UniFi Protect later: the hub notices them (<i>New Cameras Found</i>); run <b>Add New Cameras</b> again. Only the new ones are added.</p>
+
+<h2>How it works</h2>
+<table>
+  <tr><th>What</th><th>How</th></tr>
+  <tr><td>Connection</td><td>Only Ubiquiti's official <b>Protect Integration API</b> on the console (<code>/proxy/protect/integration/v1</code>) with your API key. No username or password, no private API, no cloud. The key is sent to the console you enter and nowhere else, and it never appears in a log.</td></tr>
+  <tr><td>Pictures</td><td>The hub runs a small picture server on the controller (port 47080). Each camera's Control4 camera page points at it with that camera's own random login, so Control4 apps and DirectorLink get the pictures, and the hub fetches them from the console with the key. A picture is kept at most one second.</td></tr>
+  <tr><td>Live video</td><td>The console's stream, handed to the Control4 apps (Control4 OS 3.3.2 or newer). <b>Live Video</b> chooses <b>RTSP (port 7447)</b>, the default and the one to try first, or <b>RTSPS (port 7441)</b>, which is encrypted but may not play in Control4 apps. With <i>Create Streams</i> on Automatic the hub switches on the streams of cameras that have none in UniFi Protect.</td></tr>
+  <tr><td>Events</td><td>Smart detections, motion and doorbell rings arrive at once over the console's event stream (WebSocket) and go to their camera.</td></tr>
+</table>
+
+<h2>The alerts tile</h2>
+<p>The hub appears in Composer as <b>UniFi Protect Hub</b>. Add it to a room menu (for example <i>Security</i>) in Composer's Navigator settings, and rename it to something homeowners understand, such as <b>Camera Alerts</b>. Tapping the tile turns alerts on or off for every camera.</p>
+<div class="states">
+  <div class="state"><img src="icons/tile/on_300.png" alt=""><b>Alerts on</b><span>All cameras watching</span></div>
+  <div class="state"><img src="icons/tile/alert_300.png" alt=""><b>Alert</b><span>A camera raised an alert</span></div>
+  <div class="state"><img src="icons/tile/off_300.png" alt=""><b>Alerts off</b><span>Off or snoozed</span></div>
+  <div class="state"><img src="icons/tile/error_300.png" alt=""><b>Attention</b><span>The console or a camera is offline</span></div>
+  <div class="state"><img src="icons/tile/pending_300.png" alt=""><b>Working</b><span>Connecting or adding cameras</span></div>
+</div>
+<p class="note">Alerts off pauses the <i>Alert</i> events and notifications. Detection events (motion, person, vehicle...) keep running automations, and doorbells keep ringing.</p>
+
+<h2>One notification for all cameras</h2>
+<p><b>When</b> UniFi Protect Hub &rarr; <i>Camera Alert</i> &rarr; <b>Send notification</b> "<code>LAST_ALERT_TYPE</code> at <code>LAST_ALERT_CAMERA</code>" with the attachment <i>Snapshot from the camera that raised the alert or rang</i>. <b>When</b> <i>Doorbell Ring</i> &rarr; notify "Someone at <code>LAST_RING_CAMERA</code>".</p>
+
+<h2>Properties</h2>
+<table>
+  <tr><th>Property</th><th>Description</th></tr>
+  <tr><td>Status</td><td>What the hub is doing and what to do next.</td></tr>
+  <tr><td>Console</td><td>The console's name and its UniFi Protect version.</td></tr>
+  <tr><td>Cameras · Found On Console</td><td>Cameras in the project and which are offline; cameras and doorbells on the console, and how many are not added yet.</td></tr>
+  <tr><td>Event Connection</td><td>The console's event stream: live since when, how many messages.</td></tr>
+  <tr><td>Picture Server · Last Error</td><td>Where the picture server listens and how many pictures it served; the last thing that went wrong, with its time.</td></tr>
+  <tr><td>Console Address · API Key</td><td>The console's IP address, and the API key made in <i>Settings &gt; Control Plane &gt; Integrations</i>.</td></tr>
+  <tr><td>Live Video</td><td>RTSP (port 7447, default) or RTSPS (port 7441). Try RTSP first.</td></tr>
+  <tr><td>Create Streams</td><td>Automatic (default): switch on the streams of cameras that have RTSP off in UniFi Protect. Off: use only streams already on.</td></tr>
+  <tr><td>Ignored Cameras</td><td>Names or ids of cameras that Add New Cameras skips.</td></tr>
+  <tr><td>Picture Server Port</td><td>47080 by default. Change it only if another driver uses that port.</td></tr>
+  <tr><td>Alerts · Default Alert On · Snapshot With Alerts</td><td>Master switch; Alert On for new cameras; a snapshot for notifications.</td></tr>
+  <tr><td>Log Level</td><td>Also sets every camera's. <i>Debug</i> logs every request and event (never the key or stream tokens) to the Lua tab and Director's driver log.</td></tr>
+</table>
+
+<h2>Actions</h2>
+<table>
+  <tr><th>Action</th><th>What it does</th></tr>
+  <tr><td>Connect Now</td><td>Connects to the console again and reads its cameras.</td></tr>
+  <tr><td>Add New Cameras</td><td>Adds every camera and doorbell that is not in the project yet.</td></tr>
+  <tr><td>Update Camera Names</td><td>Renames the cameras to their names in UniFi Protect.</td></tr>
+  <tr><td>Send Settings To Cameras</td><td>Sends every camera its settings and streams again.</td></tr>
+  <tr><td>Print Diagnostics</td><td>Logs the console, its Protect version, the API's answer for every camera (names, ids, models, kinds, streams), the event stream and the last 10 events.</td></tr>
+</table>
+
+<h2>Programming reference</h2>
+<h3>Events</h3>
+<p>Camera Alert, Doorbell Ring, Camera Offline, Camera Online, Alerts On, Alerts Off, New Cameras Found, Console Offline, Console Online.</p>
+<h3>Variables</h3>
+<p><code>ALERTS_ENABLED</code>, <code>ALERT_ACTIVE</code>, <code>ALL_ONLINE</code>, <code>CONSOLE_ONLINE</code> (BOOL); <code>CAMERAS_TOTAL</code>, <code>CAMERAS_ONLINE</code> (NUMBER); <code>LAST_ALERT_CAMERA</code>, <code>LAST_ALERT_TYPE</code>, <code>LAST_ALERT_TIME</code>, <code>LAST_RING_CAMERA</code>, <code>LAST_RING_TIME</code>, <code>LAST_OFFLINE_CAMERA</code>, <code>PROTECT_VERSION</code> (STRING).</p>
+<h3>Conditionals and commands</h3>
+<p>Camera alerts are On / Off &middot; An alert is Active / Clear &middot; All cameras are Online &middot; The console is Online &middot; Last alert is &lt;type&gt;. Commands: <code>SET_ALERTS</code> (On / Off / Toggle), <code>SNOOZE_ALERTS</code> (minutes), <code>REFRESH</code>.</p>
+
+<h2>Troubleshooting</h2>
+<table>
+  <tr><th>Symptom</th><th>What to check</th></tr>
+  <tr><td>"The console refused the API key"</td><td>Make a new key in <i>Settings &gt; Control Plane &gt; Integrations</i> and paste it again.</td></tr>
+  <tr><td>"UniFi Protect ... is too old" or "no Integration API"</td><td>Update UniFi Protect on the console to 5.3 or newer.</td></tr>
+  <tr><td>"Cannot reach the console"</td><td>Check the Console Address (the console's IP, not the camera's) and that the controller can reach it on port 443.</td></tr>
+  <tr><td>No pictures</td><td>Check <i>Picture Server</i>. If the port is in use, choose another <i>Picture Server Port</i>. Run <b>Test Picture</b> on a camera.</td></tr>
+  <tr><td>Pictures but no video</td><td>Control4 OS 3.3.2 or newer is needed. Try the other <i>Live Video</i> setting. In UniFi Protect, turn off <i>Enhanced Encoding</i> (H.265) for the camera: Control4 plays H.264.</td></tr>
+  <tr><td>No events</td><td>Check <i>Event Connection</i>, and that smart detections are on for the camera in UniFi Protect.</td></tr>
+</table>
+
+<h2>Change log</h2>
+<table>
+  <tr><th>Version</th><th>Changes</th></tr>
+  <tr><td>1.0.0-beta.1</td><td>First release (beta).</td></tr>
+</table>
+
+<h2>License</h2>
+<p class="muted">Installing third-party drivers or changing a Control4 project can affect compatibility, support, warranty or recovery. Keep a backup of your project. The license is included as <code>www/LICENSE.txt</code> and <code>www/NOTICE.txt</code>.</p>
+<p>Apache License 2.0. Copyright 2026 DirectorLink. DirectorLink is an independent project, not affiliated with Control4 or Snap One. Not affiliated with or endorsed by Ubiquiti. Product names are trademarks of their owners.</p>
+</main>
+</body>
+</html>

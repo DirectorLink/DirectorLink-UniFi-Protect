@@ -1,0 +1,23 @@
+DirectorLink · UniFi Protect for Control4
+Copyright 2026 DirectorLink
+
+This product is licensed under the Apache License 2.0 (see LICENSE).
+
+DirectorLink is an independent project, not affiliated with Control4 or Snap One.
+Not affiliated with or endorsed by Ubiquiti. Product names are trademarks of their owners.
+
+Credits
+
+No third-party code is included. The drivers use only Ubiquiti's official
+UniFi Protect Integration API, as documented at https://developer.ui.com
+(the OpenAPI specifications of UniFi Protect 5.3.48, 6.0.53, 6.1.79 and
+6.2.83). How the Control4 camera proxy behaves in the field was learned from
+the open-source C4-UnifiProtect drivers (https://github.com/efic1/C4-UnifiProtect,
+MIT License); no code was copied from them.
+
+Control4 interfaces follow the public Snap One DriverWorks documentation
+(https://snap-one.github.io/docs-driverworks-fundamentals/). The WebSocket
+client is a new implementation of RFC 6455.
+
+The test fixtures in tests/ follow the official API schema and describe a
+made-up home; names, addresses and ids in them are invented.

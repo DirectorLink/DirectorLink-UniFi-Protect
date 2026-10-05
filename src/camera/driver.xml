@@ -1,0 +1,239 @@
+<devicedata>
+	<copyright>Copyright 2026 DirectorLink</copyright>
+	<creator>DirectorLink</creator>
+	<manufacturer>Ubiquiti</manufacturer>
+	<name>DirectorLink · UniFi Protect Camera</name>
+	<model>UniFi Protect Camera / Doorbell</model>
+	<created>10/05/2026 00:00</created>
+	<!-- tools/build.py stamps modified and version from the VERSION file -->
+	<modified>10/05/2026 00:00</modified>
+	<version>0</version>
+	<small image_source="c4z">icons/device_sm.png</small>
+	<large image_source="c4z">icons/device_lg.png</large>
+	<control>lua_gen</control>
+	<controlmethod>ip</controlmethod>
+	<driver>DriverWorks</driver>
+	<composer_categories>
+		<category>Cameras</category>
+	</composer_categories>
+	<!-- Never change or remove proxies, connection ids or event ids in later versions:
+	     Control4 projects that already use the driver depend on them. Event 1 (Alert) and
+	     event 2 (Ring) are part of the DirectorLink camera agreement. -->
+	<proxies qty="1">
+		<proxy proxybindingid="5001" name="Camera" primary="True" image_source="c4z" small_image="icons/device_sm.png" large_image="icons/device_lg.png">camera</proxy>
+	</proxies>
+
+	<capabilities>
+		<modes>SNAPSHOT, H264</modes>
+		<!-- Live video: Control4 asks GET_STREAM_URLS (OS 3.3.2 and newer) for the console's stream -->
+		<requires_dynamic_stream_urls>true</requires_dynamic_stream_urls>
+		<has_pan>false</has_pan>
+		<has_tilt>false</has_tilt>
+		<has_zoom>false</has_zoom>
+		<has_home>false</has_home>
+		<has_pan_scan>false</has_pan_scan>
+		<has_tilt_scan>false</has_tilt_scan>
+		<has_night_mode>false</has_night_mode>
+		<number_presets>0</number_presets>
+		<!-- The camera page points at the hub's picture server on the controller, with Basic login -->
+		<default_http_port>47080</default_http_port>
+		<default_rtsp_port>7447</default_rtsp_port>
+		<default_authentication_required>true</default_authentication_required>
+		<default_authentication_type>BASIC</default_authentication_type>
+		<default_username></default_username>
+		<default_password></default_password>
+		<default_aspect_ratio>16x9</default_aspect_ratio>
+		<address_readonly>false</address_readonly>
+		<http_port_readonly>false</http_port_readonly>
+		<show_test_url>true</show_test_url>
+		<use_http_for_h264>false</use_http_for_h264>
+		<has_extras>true</has_extras>
+	</capabilities>
+
+	<notification_attachment_provider>true</notification_attachment_provider>
+	<notification_attachments>
+		<attachment>
+			<id>1001</id>
+			<type>IMAGE_JPEG</type>
+			<description>Snapshot at the last alert or ring</description>
+			<source>MEMORY</source>
+		</attachment>
+	</notification_attachments>
+
+	<events>
+		<event><id>1</id><name>Alert</name><description>When NAME raises an alert (alerts on, matches Alert On); LAST_ALERT says what it saw</description></event>
+		<event><id>2</id><name>Ring</name><description>When the doorbell NAME is pressed; LAST_RING says when</description></event>
+		<event><id>3</id><name>Motion Detected</name><description>When NAME detects motion</description></event>
+		<event><id>4</id><name>Motion Ended</name><description>When motion ends on NAME</description></event>
+		<event><id>5</id><name>Person Detected</name><description>When NAME detects a person</description></event>
+		<event><id>6</id><name>Vehicle Detected</name><description>When NAME detects a vehicle</description></event>
+		<event><id>7</id><name>Animal Detected</name><description>When NAME detects an animal</description></event>
+		<event><id>8</id><name>Package Detected</name><description>When NAME detects a package</description></event>
+		<event><id>9</id><name>Face Detected</name><description>When NAME detects a face</description></event>
+		<event><id>10</id><name>License Plate Detected</name><description>When NAME detects a license plate</description></event>
+		<event><id>11</id><name>Line Crossing</name><description>When NAME detects a line crossing</description></event>
+		<event><id>12</id><name>Intrusion Detected</name><description>When NAME detects something in a zone</description></event>
+		<event><id>13</id><name>Sound Detected</name><description>When NAME hears a smoke alarm, glass break or another sound it listens for; LAST_SOUND says which</description></event>
+		<event><id>14</id><name>Camera Online</name><description>When NAME comes online</description></event>
+		<event><id>15</id><name>Camera Offline</name><description>When NAME goes offline</description></event>
+		<event><id>16</id><name>Alerts On</name><description>When alerts turn on for NAME</description></event>
+		<event><id>17</id><name>Alerts Off</name><description>When alerts turn off or are snoozed for NAME</description></event>
+	</events>
+
+	<conditionals>
+		<conditional>
+			<id>1</id><name>CAMERA_ONLINE</name><type>BOOL</type>
+			<condition_statement>Camera is</condition_statement><description>NAME camera is STRING</description>
+			<true_text>Online</true_text><false_text>Offline</false_text>
+		</conditional>
+		<conditional>
+			<id>2</id><name>ALERTS_ENABLED</name><type>BOOL</type>
+			<condition_statement>Alerts are</condition_statement><description>NAME alerts are STRING</description>
+			<true_text>On</true_text><false_text>Off</false_text>
+		</conditional>
+		<conditional>
+			<id>3</id><name>ALERT_ACTIVE</name><type>BOOL</type>
+			<condition_statement>Alert is</condition_statement><description>NAME alert is STRING</description>
+			<true_text>Active</true_text><false_text>Clear</false_text>
+		</conditional>
+		<conditional>
+			<id>4</id><name>MOTION_ACTIVE</name><type>BOOL</type>
+			<condition_statement>Motion is</condition_statement><description>NAME motion is STRING</description>
+			<true_text>Active</true_text><false_text>Idle</false_text>
+		</conditional>
+		<conditional>
+			<id>5</id><name>DETECTION_ACTIVE</name><type>LIST</type>
+			<condition_statement>Active detection</condition_statement><description>NAME active detection LOGIC STRING</description>
+			<items>
+				<item>Motion</item><item>Person</item><item>Vehicle</item><item>Animal</item><item>Package</item>
+				<item>Face</item><item>License Plate</item><item>Line Crossing</item><item>Intrusion</item>
+			</items>
+		</conditional>
+		<conditional>
+			<id>6</id><name>LAST_ALERT</name><type>LIST</type>
+			<condition_statement>Last alert</condition_statement><description>NAME last alert LOGIC STRING</description>
+			<items>
+				<item>Person</item><item>Vehicle</item><item>Animal</item><item>Package</item><item>Face</item>
+				<item>License Plate</item><item>Line Crossing</item><item>Intrusion</item><item>Motion</item>
+			</items>
+		</conditional>
+		<conditional>
+			<id>7</id><name>IS_DOORBELL</name><type>BOOL</type>
+			<condition_statement>This camera is a</condition_statement><description>NAME is a STRING</description>
+			<true_text>Doorbell</true_text><false_text>Camera</false_text>
+		</conditional>
+	</conditionals>
+
+	<config>
+		<identify_text>Added and set up by the DirectorLink · UniFi Protect driver (UniFi Protect Hub): run its Add New Cameras.</identify_text>
+		<script file="driver.lua" jit="1"/>
+		<documentation file="www/documentation.html"/>
+
+		<properties>
+			<property><name>Camera Section</name><type>LABEL</type><default>Camera</default></property>
+			<property>
+				<name>Camera Enabled</name><type>LIST</type><readonly>false</readonly><default>Yes</default>
+				<items><item>Yes</item><item>No</item></items>
+				<tooltip>No: no events, alerts or pictures, and the hub stops counting it. Use it for a camera that is off or removed.</tooltip>
+			</property>
+			<property>
+				<name>UniFi Camera</name><type>STRING</type><readonly>false</readonly><default></default>
+				<tooltip>The UniFi Protect camera this driver shows. The hub fills it in. To link a camera added by hand, type the camera's name as it is in UniFi Protect (or its id).</tooltip>
+			</property>
+			<property>
+				<name>Camera Type</name><type>LIST</type><readonly>false</readonly><default>Automatic</default>
+				<items><item>Automatic</item><item>Camera</item><item>Doorbell</item></items>
+				<tooltip>Automatic: a doorbell when the console says so or the first time it rings.</tooltip>
+			</property>
+
+			<property><name>Status Section</name><type>LABEL</type><default>Status</default></property>
+			<property><name>Status</name><type>STRING</type><readonly>true</readonly><default>Starting...</default></property>
+			<property><name>Attention</name><type>STRING</type><readonly>true</readonly><default></default></property>
+			<property><name>Camera</name><type>STRING</type><readonly>true</readonly><default></default></property>
+			<property><name>Video</name><type>STRING</type><readonly>true</readonly><default></default></property>
+			<property><name>Pictures</name><type>STRING</type><readonly>true</readonly><default></default></property>
+			<property><name>Last Event</name><type>STRING</type><readonly>true</readonly><default></default></property>
+			<property><name>Managed By</name><type>STRING</type><readonly>true</readonly><default></default></property>
+			<property><name>Driver Version</name><type>STRING</type><readonly>true</readonly><default></default></property>
+
+			<property><name>Alerts Section</name><type>LABEL</type><default>Alerts</default></property>
+			<property>
+				<name>Alerts</name><type>LIST</type><readonly>false</readonly><default>On</default>
+				<items><item>On</item><item>Off</item></items>
+				<tooltip>When off, detections still run automations but the Alert event, notifications and history are paused. Rings always ring.</tooltip>
+			</property>
+			<property>
+				<name>Alert On</name><type>LIST</type><readonly>false</readonly><default>Any detection</default>
+				<items><item>Any detection</item><item>People and vehicles</item><item>People only</item></items>
+				<tooltip>Which detections raise an alert. People and vehicles need a camera with smart detections in UniFi Protect.</tooltip>
+			</property>
+			<property>
+				<name>Hold Time (s)</name><type>RANGED_INTEGER</type><minimum>5</minimum><maximum>600</maximum><default>30</default><readonly>false</readonly>
+				<tooltip>After an alert, further detections raise no new alert until this long has passed without one: one event alerts once.</tooltip>
+			</property>
+			<property>
+				<name>Snapshot With Alerts</name><type>LIST</type><readonly>false</readonly><default>Yes</default>
+				<items><item>Yes</item><item>No</item></items>
+				<tooltip>Take a picture when an alert starts or the doorbell rings, for the "Snapshot at the last alert or ring" notification attachment. Alert and Ring then wait up to 1.5 s for it, so a notification shows this event's picture.</tooltip>
+			</property>
+			<property>
+				<name>Record Alerts In History</name><type>LIST</type><readonly>false</readonly><default>Yes</default>
+				<items><item>Yes</item><item>No</item></items>
+			</property>
+
+			<property><name>Video Section</name><type>LABEL</type><default>Video</default></property>
+			<property>
+				<name>Video Quality</name><type>LIST</type><readonly>false</readonly><default>Auto</default>
+				<items><item>Auto</item><item>High</item><item>Medium</item><item>Low</item></items>
+				<tooltip>Auto picks the stream that fits each screen (Low for small tiles, High full screen). Live video RTSP or RTSPS is chosen on the hub.</tooltip>
+			</property>
+
+			<property><name>Advanced Section</name><type>LABEL</type><default>Advanced</default></property>
+			<property>
+				<name>Contact State When Active</name><type>LIST</type><readonly>false</readonly><default>Closed</default>
+				<items><item>Closed</item><item>Opened</item></items>
+			</property>
+			<property>
+				<name>Log Level</name><type>LIST</type><readonly>false</readonly><default>Info</default>
+				<items><item>Off</item><item>Errors</item><item>Warnings</item><item>Info</item><item>Debug</item><item>Trace</item></items>
+			</property>
+		</properties>
+
+		<actions>
+			<action><name>Reconnect</name><command>Reconnect</command></action>
+			<action><name>Test Picture</name><command>TestPicture</command></action>
+			<action><name>Setup Report</name><command>Report</command></action>
+		</actions>
+
+		<commands>
+			<command>
+				<name>SET_ALERTS</name><description>Set alerts on NAME to PARAM1</description>
+				<params><param><name>State</name><type>LIST</type><items><item>On</item><item>Off</item><item>Toggle</item></items></param></params>
+			</command>
+			<command>
+				<name>SNOOZE_ALERTS</name><description>Snooze alerts on NAME for PARAM1 minutes</description>
+				<params><param><name>Minutes</name><type>RANGED_INTEGER</type><minimum>1</minimum><maximum>1440</maximum></param></params>
+			</command>
+			<command>
+				<name>SET_ALERT_ON</name><description>Alert on PARAM1 for NAME</description>
+				<params><param><name>Alert On</name><type>LIST</type><items><item>Any detection</item><item>People and vehicles</item><item>People only</item></items></param></params>
+			</command>
+		</commands>
+	</config>
+
+	<connections>
+		<connection>
+			<id>5001</id><facing>6</facing><connectionname>Camera</connectionname><type>2</type>
+			<consumer>False</consumer><audiosource>False</audiosource><videosource>False</videosource><linelevel>False</linelevel>
+			<classes><class><classname>CAMERA</classname></class></classes>
+			<hidden>true</hidden>
+		</connection>
+		<connection><id>100</id><facing>6</facing><connectionname>Alert</connectionname><type>1</type><consumer>False</consumer><audiosource>False</audiosource><videosource>False</videosource><linelevel>False</linelevel><classes><class><classname>CONTACT_SENSOR</classname></class></classes></connection>
+		<connection><id>101</id><facing>6</facing><connectionname>Motion</connectionname><type>1</type><consumer>False</consumer><audiosource>False</audiosource><videosource>False</videosource><linelevel>False</linelevel><classes><class><classname>CONTACT_SENSOR</classname></class></classes></connection>
+		<connection><id>102</id><facing>6</facing><connectionname>Person</connectionname><type>1</type><consumer>False</consumer><audiosource>False</audiosource><videosource>False</videosource><linelevel>False</linelevel><classes><class><classname>CONTACT_SENSOR</classname></class></classes></connection>
+		<connection><id>103</id><facing>6</facing><connectionname>Vehicle</connectionname><type>1</type><consumer>False</consumer><audiosource>False</audiosource><videosource>False</videosource><linelevel>False</linelevel><classes><class><classname>CONTACT_SENSOR</classname></class></classes></connection>
+		<connection><id>104</id><facing>6</facing><connectionname>Animal</connectionname><type>1</type><consumer>False</consumer><audiosource>False</audiosource><videosource>False</videosource><linelevel>False</linelevel><classes><class><classname>CONTACT_SENSOR</classname></class></classes></connection>
+		<connection><id>105</id><facing>6</facing><connectionname>Package</connectionname><type>1</type><consumer>False</consumer><audiosource>False</audiosource><videosource>False</videosource><linelevel>False</linelevel><classes><class><classname>CONTACT_SENSOR</classname></class></classes></connection>
+		<connection><id>106</id><facing>6</facing><connectionname>Doorbell</connectionname><type>1</type><consumer>False</consumer><audiosource>False</audiosource><videosource>False</videosource><linelevel>False</linelevel><classes><class><classname>CONTACT_SENSOR</classname></class></classes></connection>
+	</connections>
+</devicedata>

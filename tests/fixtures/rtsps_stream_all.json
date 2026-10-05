@@ -1,0 +1,6 @@
+{
+ "high": "rtsps://192.168.50.1:7441/HiTok3nQ8xZp2Lm?enableSrtp",
+ "medium": "rtsps://192.168.50.1:7441/MedTok3nW4vB7nK?enableSrtp",
+ "low": "rtsps://192.168.50.1:7441/LowTok3nR6tY9uP?enableSrtp",
+ "package": null
+}

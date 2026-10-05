@@ -1,0 +1,243 @@
+[
+ {
+  "id": "66f1a2b3c4d5e6f7081920a1",
+  "modelKey": "camera",
+  "state": "CONNECTED",
+  "name": "Driveway",
+  "mac": "F4E2C6A1B2C1",
+  "isMicEnabled": true,
+  "osdSettings": {
+   "isNameEnabled": true,
+   "isDateEnabled": true,
+   "isLogoEnabled": false,
+   "isDebugEnabled": false,
+   "overlayLocation": "topLeft"
+  },
+  "ledSettings": {
+   "isEnabled": true,
+   "welcomeLed": false,
+   "floodLed": false
+  },
+  "lcdMessage": {},
+  "micVolume": 100,
+  "activePatrolSlot": null,
+  "videoMode": "default",
+  "hdrType": "auto",
+  "featureFlags": {
+   "supportFullHdSnapshot": true,
+   "hasHdr": true,
+   "smartDetectTypes": [
+    "person",
+    "vehicle",
+    "licensePlate",
+    "animal"
+   ],
+   "smartDetectAudioTypes": [
+    "alrmSmoke",
+    "alrmGlassBreak"
+   ],
+   "videoModes": [
+    "default",
+    "highFps"
+   ],
+   "hasMic": true,
+   "hasLedStatus": true,
+   "hasSpeaker": false
+  },
+  "smartDetectSettings": {
+   "objectTypes": [
+    "person",
+    "vehicle"
+   ],
+   "audioTypes": []
+  }
+ },
+ {
+  "id": "66f1a2b3c4d5e6f7081920a2",
+  "modelKey": "camera",
+  "state": "CONNECTED",
+  "name": "Front Door",
+  "mac": "F4E2C6A1B2C2",
+  "isMicEnabled": true,
+  "osdSettings": {
+   "isNameEnabled": true,
+   "isDateEnabled": true,
+   "isLogoEnabled": false,
+   "isDebugEnabled": false,
+   "overlayLocation": "topLeft"
+  },
+  "ledSettings": {
+   "isEnabled": true,
+   "welcomeLed": false,
+   "floodLed": false
+  },
+  "lcdMessage": {
+   "type": "DO_NOT_DISTURB",
+   "resetAt": null
+  },
+  "micVolume": 100,
+  "activePatrolSlot": null,
+  "videoMode": "default",
+  "hdrType": "auto",
+  "featureFlags": {
+   "supportFullHdSnapshot": true,
+   "hasHdr": true,
+   "smartDetectTypes": [
+    "person",
+    "package",
+    "face"
+   ],
+   "smartDetectAudioTypes": [
+    "alrmSmoke",
+    "alrmGlassBreak"
+   ],
+   "videoModes": [
+    "default",
+    "highFps"
+   ],
+   "hasMic": true,
+   "hasLedStatus": true,
+   "hasSpeaker": true
+  },
+  "smartDetectSettings": {
+   "objectTypes": [
+    "person",
+    "package"
+   ],
+   "audioTypes": []
+  }
+ },
+ {
+  "id": "66f1a2b3c4d5e6f7081920a3",
+  "modelKey": "camera",
+  "state": "DISCONNECTED",
+  "name": "Garden",
+  "mac": "F4E2C6A1B2C3",
+  "isMicEnabled": true,
+  "osdSettings": {
+   "isNameEnabled": true,
+   "isDateEnabled": true,
+   "isLogoEnabled": false,
+   "isDebugEnabled": false,
+   "overlayLocation": "topLeft"
+  },
+  "ledSettings": {
+   "isEnabled": true,
+   "welcomeLed": false,
+   "floodLed": false
+  },
+  "lcdMessage": {},
+  "micVolume": 100,
+  "activePatrolSlot": null,
+  "videoMode": "default",
+  "hdrType": "auto",
+  "featureFlags": {
+   "supportFullHdSnapshot": true,
+   "hasHdr": true,
+   "smartDetectTypes": [],
+   "smartDetectAudioTypes": [],
+   "videoModes": [
+    "default",
+    "highFps"
+   ],
+   "hasMic": true,
+   "hasLedStatus": true,
+   "hasSpeaker": false
+  },
+  "smartDetectSettings": {
+   "objectTypes": [],
+   "audioTypes": []
+  }
+ },
+ {
+  "id": "66f1a2b3c4d5e6f7081920a4",
+  "modelKey": "camera",
+  "state": "CONNECTED",
+  "name": "Back Gate",
+  "mac": "F4E2C6A1B2C4",
+  "isMicEnabled": true,
+  "osdSettings": {
+   "isNameEnabled": true,
+   "isDateEnabled": true,
+   "isLogoEnabled": false,
+   "isDebugEnabled": false,
+   "overlayLocation": "topLeft"
+  },
+  "ledSettings": {
+   "isEnabled": true,
+   "welcomeLed": false,
+   "floodLed": false
+  },
+  "lcdMessage": {},
+  "micVolume": 100,
+  "activePatrolSlot": null,
+  "videoMode": "default",
+  "hdrType": "auto",
+  "featureFlags": {
+   "supportFullHdSnapshot": true,
+   "hasHdr": true,
+   "smartDetectTypes": [
+    "person"
+   ],
+   "smartDetectAudioTypes": [
+    "alrmSmoke",
+    "alrmGlassBreak"
+   ],
+   "videoModes": [
+    "default",
+    "highFps"
+   ],
+   "hasMic": true,
+   "hasLedStatus": true,
+   "hasSpeaker": true
+  },
+  "smartDetectSettings": {
+   "objectTypes": [
+    "person"
+   ],
+   "audioTypes": []
+  }
+ },
+ {
+  "id": "66f1a2b3c4d5e6f7081920a5",
+  "modelKey": "camera",
+  "state": "CONNECTED",
+  "name": null,
+  "mac": "F4E2C6A1B2C3",
+  "isMicEnabled": true,
+  "osdSettings": {
+   "isNameEnabled": true,
+   "isDateEnabled": true,
+   "isLogoEnabled": false,
+   "isDebugEnabled": false,
+   "overlayLocation": "topLeft"
+  },
+  "ledSettings": {
+   "isEnabled": true,
+   "welcomeLed": false,
+   "floodLed": false
+  },
+  "lcdMessage": {},
+  "micVolume": 100,
+  "activePatrolSlot": null,
+  "videoMode": "default",
+  "hdrType": "auto",
+  "featureFlags": {
+   "supportFullHdSnapshot": false,
+   "hasHdr": true,
+   "smartDetectTypes": [],
+   "smartDetectAudioTypes": [],
+   "videoModes": [
+    "default",
+    "highFps"
+   ],
+   "hasMic": true,
+   "hasLedStatus": true,
+   "hasSpeaker": false
+  },
+  "smartDetectSettings": {
+   "objectTypes": [],
+   "audioTypes": []
+  }
+ }
+]

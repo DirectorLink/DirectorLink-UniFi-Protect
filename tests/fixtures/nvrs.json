@@ -1,0 +1,11 @@
+{
+ "id": "66f1a2b3c4d5e6f708192000",
+ "modelKey": "nvr",
+ "name": "Demo UNVR",
+ "doorbellSettings": {
+  "defaultMessageText": "Welcome",
+  "defaultMessageResetTimeoutMs": 60000,
+  "customMessages": [],
+  "customImages": []
+ }
+}

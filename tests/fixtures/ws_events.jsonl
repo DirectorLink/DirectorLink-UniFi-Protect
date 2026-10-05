@@ -1,0 +1,11 @@
+{"type": "add", "item": {"id": "e01", "modelKey": "event", "type": "motion", "start": 1791230400000, "end": null, "device": "66f1a2b3c4d5e6f7081920a1"}}
+{"type": "update", "item": {"id": "e01", "modelKey": "event", "type": "motion", "start": 1791230400000, "end": 1791230408000, "device": "66f1a2b3c4d5e6f7081920a1"}}
+{"type": "add", "item": {"id": "e02", "modelKey": "event", "type": "smartDetectZone", "start": 1791230401000, "end": null, "device": "66f1a2b3c4d5e6f7081920a1", "smartDetectTypes": ["person"]}}
+{"type": "update", "item": {"id": "e02", "modelKey": "event", "type": "smartDetectZone", "start": 1791230401000, "end": null, "device": "66f1a2b3c4d5e6f7081920a1", "smartDetectTypes": ["person", "vehicle"]}}
+{"type": "update", "item": {"id": "e02", "modelKey": "event", "type": "smartDetectZone", "start": 1791230401000, "end": 1791230409000, "device": "66f1a2b3c4d5e6f7081920a1", "smartDetectTypes": ["person", "vehicle"]}}
+{"type": "add", "item": {"id": "e03", "modelKey": "event", "type": "ring", "start": 1791230420000, "end": null, "device": "66f1a2b3c4d5e6f7081920a2"}}
+{"type": "update", "item": {"id": "e03", "modelKey": "event", "type": "ring", "start": 1791230420000, "end": 1791230421000, "device": "66f1a2b3c4d5e6f7081920a2"}}
+{"type": "add", "item": {"id": "e04", "modelKey": "event", "type": "smartDetectLine", "start": 1791230430000, "end": null, "device": "66f1a2b3c4d5e6f7081920a1", "smartDetectTypes": ["vehicle"]}}
+{"type": "add", "item": {"id": "e05", "modelKey": "event", "type": "smartAudioDetect", "start": 1791230440000, "end": null, "device": "66f1a2b3c4d5e6f7081920a2", "smartDetectTypes": ["alrmSmoke"]}}
+{"type": "add", "item": {"id": "e06", "modelKey": "event", "type": "sensorOpened", "start": 1791230450000, "end": null, "device": "77a1a2b3c4d5e6f708192b01", "metadata": {"sensorMountType": {"text": "door"}}}}
+{"type": "add", "item": {"id": "e07", "modelKey": "event", "type": "smartDetectLoiterZone", "start": 1791230460000, "end": null, "device": "66f1a2b3c4d5e6f7081920a1", "smartDetectTypes": null}}

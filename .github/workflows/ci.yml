@@ -1,0 +1,39 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install test runtime
+        run: |
+          pip install lupa
+          sudo apt-get install -y lua5.1
+      - name: Lua checks
+        run: cd tests && python test_static.py
+      - name: driver.xml checks
+        run: cd tests && python test_xml.py
+      - name: JSON and WebSocket tests
+        run: cd tests && python test_protocol.py
+      - name: Hub tests
+        run: cd tests && python test_hub.py
+      - name: Camera tests
+        run: cd tests && python test_camera.py
+      - name: Hub and camera together
+        run: cd tests && python test_integration.py
+      - name: Build
+        run: python tools/build.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: DirectorLink-UniFi-Protect
+          path: |
+            dist/*.c4z
+            dist/SHA256SUMS.txt
