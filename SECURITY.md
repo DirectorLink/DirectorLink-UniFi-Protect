@@ -12,7 +12,7 @@ We will confirm the report, fix the problem in a new release, and credit you if 
 
 ## Supported versions
 
-Only the [newest release](../../releases) gets security fixes.
+Only the [latest release](../../releases/latest) gets security fixes.
 
 ## Scope
 

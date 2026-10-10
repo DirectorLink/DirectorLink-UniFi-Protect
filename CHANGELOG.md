@@ -2,6 +2,25 @@
 
 All notable changes to DirectorLink · UniFi Protect for Control4. Versions follow the `VERSION` file; the driver version Composer compares is in brackets.
 
+## 1.0.1 (1000199) - 2026-10-10
+
+The first release that is not a beta. No installer has reported on it from a real UniFi system yet; field reports are welcome.
+
+### UniFi Protect Camera
+
+- **DirectorLink camera agreement, version 1, complete:** new string variable `DIRECTORLINK_CAMERA_EVENTS`, `Alert=1` for a camera and `Alert=1,Ring=2` for a doorbell (the ids of *Alert* and *Ring* in driver.xml), so DirectorLink 1.10 finds the events without reading driver.xml. It comes after the existing variables (their order never changes) and follows the kind.
+- `DIRECTORLINK_CAMERA`, `DIRECTORLINK_CAMERA_KIND` and `DIRECTORLINK_CAMERA_EVENTS` are written on every start, so they are right after a driver update too.
+- A camera whose kind is `camera` (Camera Type set to *Camera*) never fires *Ring*.
+- Every ring gets a new `LAST_RING`, later than the one before. It is the console's time of the press when that is within two minutes behind and five seconds ahead of the controller's clock, else the controller's time.
+
+### UniFi Protect Hub
+
+- No changes apart from the version number.
+
+### Both
+
+- README, release notes and the Documentation tabs carry the line "DirectorLink is an independent project, not affiliated with Control4 or Snap One."
+
 ## 1.0.0-beta.1 (1000001) - 2026-10-05
 
 First release, a **beta**: built on Ubiquiti's published API and tested against recorded API answers, not yet confirmed on a real UniFi system.

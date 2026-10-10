@@ -27,9 +27,10 @@ PROXY_PROPS = ""; DEVICE_ID = 900; PROXY_DEVICE = 901; CONTROLLER_IP = "192.168.
 NOW_MS = nil; HTTP_ASYNC = false; BUSY_PORTS = {}; SERVERS = {}
 local timerSeq = 0
 C4 = {}
-function C4:AddVariable(n, v) VARS[n] = v; return 1, true end
+VAR_ORDER = {}
+function C4:AddVariable(n, v) VARS[n] = v; VAR_ORDER[#VAR_ORDER + 1] = n; return 1, true end
 function C4:SetVariable(n, v) VARS[n] = v; VAR_LOG = VAR_LOG or {}; VAR_LOG[#VAR_LOG + 1] = n end
-function C4:FireEvent(n) EVENTS[#EVENTS + 1] = n; EVENT_VARS = EVENT_VARS or {}; EVENT_VARS[#EVENT_VARS + 1] = { n, VARS["LAST_ALERT"], VARS["LAST_RING"] } end
+function C4:FireEvent(n) EVENTS[#EVENTS + 1] = n; EVENT_VARS = EVENT_VARS or {}; EVENT_VARS[#EVENT_VARS + 1] = { n, VARS["LAST_ALERT"], VARS["LAST_RING"], VARS["DIRECTORLINK_CAMERA_KIND"], VARS["DIRECTORLINK_CAMERA_EVENTS"] } end
 function C4:UpdateProperty(n, v) Properties[n] = v end
 function C4:SetPropertyAttribs(n, v) ATTRIBS[n] = v end
 function C4:SendToProxy(b, c, p, k) PROXY[#PROXY + 1] = { b, c, p } end

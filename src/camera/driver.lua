@@ -556,8 +556,18 @@ local function EventSeconds(ms)
 	return math.floor(s)
 end
 
+-- DirectorLink camera agreement v1: the marker, the kind, and the ids of its events in driver.xml
+-- (Alert = 1, Ring = 2; a camera says only its Alert). force: written on every start, so they are
+-- right after a driver update too.
+local function SetAgreementVariables(force)
+	local kind = Kind()
+	SetVar("DIRECTORLINK_CAMERA", "1", force)
+	SetVar("DIRECTORLINK_CAMERA_KIND", kind, force)
+	SetVar("DIRECTORLINK_CAMERA_EVENTS", kind == "doorbell" and "Alert=1,Ring=2" or "Alert=1", force)
+end
+
 local function KindChanged()
-	SetVar("DIRECTORLINK_CAMERA_KIND", Kind())
+	SetAgreementVariables(false)
 	if UpdateVideo then UpdateVideo() end
 end
 
@@ -570,13 +580,25 @@ local function Ring(p)
 		LogDebug("Second press within %d s: one ring", RING_DEBOUNCE_S)
 		return
 	end
-	gState.lastRingAt = os.time()
-	local stamp = IsoUtc(EventSeconds(p.START))
 	if not gCfg.ringSeen then
 		gCfg.ringSeen = true
 		SaveCfg()
-		KindChanged()
+		KindChanged()                 -- the kind (doorbell) is set before the first Ring
 	end
+	if Kind() ~= "doorbell" then
+		-- Camera Type = Camera: a camera never fires Ring (DirectorLink camera agreement)
+		LogInfo("A ring from UniFi Protect ignored: Camera Type is set to Camera")
+		return
+	end
+	gState.lastRingAt = os.time()
+	-- The console's time of the press when it is plausible (DirectorLink trusts LAST_RING from two
+	-- minutes behind the controller's clock to five seconds ahead), else now; every ring gets a new
+	-- LAST_RING, later than the one before
+	local seconds = tonumber(p.START) and math.floor(tonumber(p.START) / 1000) or os.time()
+	if seconds < os.time() - 120 or seconds > os.time() + 5 then seconds = os.time() end
+	if seconds <= (gState.lastRingSeconds or 0) then seconds = gState.lastRingSeconds + 1 end
+	gState.lastRingSeconds = seconds
+	local stamp = IsoUtc(seconds)
 	SetVar("LAST_RING", stamp)        -- set before "Ring" fires
 	SaveCfg()
 	SetVar("RINGING", true)
@@ -1122,6 +1144,8 @@ local VARIABLES = {
 	{ "INTRUSION", "0", "BOOL" },
 	{ "RINGING", "0", "BOOL" },
 	{ "LAST_SOUND", "", "STRING" },
+	-- 1.0.1: the ids of Alert and Ring for DirectorLink (after the others: their order never changes)
+	{ "DIRECTORLINK_CAMERA_EVENTS", "Alert=1", "STRING" },
 }
 
 function OnDriverInit()
@@ -1134,6 +1158,7 @@ function OnDriverInit()
 		if type(saved) == "string" then v[2] = saved end
 	end
 	AddVariables(VARIABLES)
+	SetAgreementVariables(true)
 	gState.lastAlert = GetVar("LAST_ALERT") or ""
 end
 

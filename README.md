@@ -8,9 +8,11 @@ Free. No subscription, no license key, no account with us.
 
 Made by [DirectorLink](https://directorlink.io), the open-source management layer for Control4 homes. Works on its own: DirectorLink is not required.
 
-**Download:** [latest release](../../releases) · **Help and updates:** [directorlink.io/drivers/unifi-protect](https://directorlink.io/drivers/unifi-protect)
+DirectorLink is an independent project, not affiliated with Control4 or Snap One.
 
-> **Beta.** This first release follows Ubiquiti's published API exactly and passes its tests against recorded API answers, but it has not run on a real UniFi system yet. It stays a beta until an installer's logs confirm pictures, live video, alerts and doorbell rings. If you try it, please send the log: see [Testing the beta](#testing-the-beta).
+**Download:** [latest release](../../releases/latest) · **Help and updates:** [directorlink.io/drivers/unifi-protect](https://directorlink.io/drivers/unifi-protect)
+
+> **Field reports wanted.** The drivers follow Ubiquiti's published API exactly and pass their tests against recorded API answers, but no installer has reported on them from a real UniFi system yet. If you install them, please send the log: see [Field reports](#field-reports).
 
 | <img src="src/hub/www/icons/tile/on_300.png" width="80"> | <img src="src/hub/www/icons/tile/alert_300.png" width="80"> | <img src="src/hub/www/icons/tile/off_300.png" width="80"> | <img src="src/hub/www/icons/tile/error_300.png" width="80"> | <img src="src/hub/www/icons/tile/pending_300.png" width="80"> |
 |:---:|:---:|:---:|:---:|:---:|
@@ -47,7 +49,7 @@ There are two drivers. Install both:
 | **DirectorLink · UniFi Protect** | `DirectorLink-UniFi-Protect.c4z` | Add it **once** per console. It connects to the console, adds its cameras, serves their pictures, passes on their events and gives the home one alerts tile. It shows in the project as **UniFi Protect Hub**. |
 | **DirectorLink · UniFi Protect Camera** | `DirectorLink-UniFi-Protect-Camera.c4z` | One per camera or doorbell, added by the hub. Pictures, live video, detections, alerts, rings and programming. |
 
-1. Download both `.c4z` files from the [releases](../../releases) (the beta is marked *Pre-release*).
+1. Download both `.c4z` files from the [latest release](../../releases/latest).
 2. In Composer Pro: **Driver → Add or Update Driver or Agent**, once for each file.
 3. Search **DirectorLink** and add **DirectorLink · UniFi Protect** to the room where new cameras should appear, for example a "Cameras" room.
 
@@ -130,11 +132,11 @@ G4 Doorbell, G4 Doorbell Pro and G6 Entry are cameras with a ring. Each press se
 
 ## With DirectorLink
 
-DirectorLink's next version shows these cameras and doorbells in the DirectorLink app, with their pictures, their alerts and their doorbell rings, as soon as it is installed. Nothing needs to be set up: the camera driver follows the DirectorLink camera agreement, so DirectorLink recognizes it by what it says, not by its file name.
+From DirectorLink 1.10, the DirectorLink app shows these cameras and doorbells with their pictures, their alerts and their doorbell rings. Nothing needs to be set up: the camera driver follows the [DirectorLink camera agreement, version 1](https://github.directorlink.io/blob/main/docs/CAMERA_DRIVERS.md), so DirectorLink recognizes it by what it says, not by its file name.
 
-- Every camera driver sets `DIRECTORLINK_CAMERA` = `1` and `DIRECTORLINK_CAMERA_KIND` = `camera` or `doorbell`.
-- An alert (after the camera's Alert On, the hub's alerts switch, snooze and Hold Time) sets `LAST_ALERT` to what it saw (Person, Vehicle, Animal, Package, Face, License Plate, Line Crossing, Intrusion, Motion), then fires the event *Alert*.
-- A doorbell press sets `LAST_RING` to the time (ISO 8601 UTC), then fires the event *Ring*.
+- Every camera driver sets `DIRECTORLINK_CAMERA` = `1`, `DIRECTORLINK_CAMERA_KIND` = `camera` or `doorbell`, and `DIRECTORLINK_CAMERA_EVENTS` = `Alert=1` (a camera) or `Alert=1,Ring=2` (a doorbell): the ids of its *Alert* and *Ring* events in driver.xml, so DirectorLink finds them without reading driver.xml. They are written on every start and follow the kind.
+- An alert (after the camera's Alert On, the hub's alerts switch, snooze and Hold Time) sets `LAST_ALERT` to what it saw (Person, Vehicle, Animal, Package, Face, License Plate, Line Crossing, Intrusion, Motion), then fires the event *Alert*: once per alert.
+- A doorbell press sets `LAST_RING` to the time (ISO 8601 UTC, a new value for every ring), then fires the event *Ring*. A camera whose kind is `camera` (Camera Type set to *Camera*) never fires *Ring*.
 
 DirectorLink takes the pictures the way Control4 apps do, from the camera's Properties page and the hub's picture server, so the API key never leaves the controller. Without DirectorLink the drivers work the same.
 
@@ -159,7 +161,7 @@ DirectorLink takes the pictures the way Control4 apps do, from the camera's Prop
 **UniFi Protect Camera**
 
 - **Events:** Alert · Ring · Motion Detected · Motion Ended · Person Detected · Vehicle Detected · Animal Detected · Package Detected · Face Detected · License Plate Detected · Line Crossing · Intrusion Detected · Sound Detected · Camera Online · Camera Offline · Alerts On · Alerts Off
-- **Variables:** `DIRECTORLINK_CAMERA` `DIRECTORLINK_CAMERA_KIND` `LAST_ALERT` `LAST_RING` `LAST_ALERT_TIME` `LAST_DETECTION` `LAST_SOUND` (STRING) · `ONLINE` `ALERTS_ENABLED` `ALERT_ACTIVE` `MOTION` `PERSON` `VEHICLE` `ANIMAL` `PACKAGE` `FACE` `LICENSE_PLATE` `LINE_CROSSING` `INTRUSION` `RINGING` (BOOL)
+- **Variables:** `DIRECTORLINK_CAMERA` `DIRECTORLINK_CAMERA_KIND` `DIRECTORLINK_CAMERA_EVENTS` `LAST_ALERT` `LAST_RING` `LAST_ALERT_TIME` `LAST_DETECTION` `LAST_SOUND` (STRING) · `ONLINE` `ALERTS_ENABLED` `ALERT_ACTIVE` `MOTION` `PERSON` `VEHICLE` `ANIMAL` `PACKAGE` `FACE` `LICENSE_PLATE` `LINE_CROSSING` `INTRUSION` `RINGING` (BOOL)
 - **Conditionals:** Camera is Online · Alerts are On · Alert is Active · Motion is Active · Active detection is &lt;type&gt; · Last alert is &lt;type&gt; · This camera is a Doorbell
 - **Commands:** `SET_ALERTS` · `SNOOZE_ALERTS` · `SET_ALERT_ON`
 - **Contacts** (Connections → Control): Alert · Motion · Person · Vehicle · Animal · Package · Doorbell. Bind them to Control4 motion or contact sensor devices.
@@ -167,7 +169,7 @@ DirectorLink takes the pictures the way Control4 apps do, from the camera's Prop
 
 ## Updating
 
-1. Download the new `.c4z` files from the [releases](../../releases).
+1. Download the new `.c4z` files from the [latest release](../../releases/latest).
 2. Check that the names are exactly `DirectorLink-UniFi-Protect.c4z` and `DirectorLink-UniFi-Protect-Camera.c4z`, not `... (1).c4z`.
 3. **Driver → Add or Update Driver or Agent** for each. Cameras keep their settings, rooms and programming.
 
@@ -187,9 +189,9 @@ DirectorLink takes the pictures the way Control4 apps do, from the camera's Prop
 
 For details, run **Print Diagnostics** on the hub and **Setup Report** on a camera, with **Log Level** set to *Debug*.
 
-## Testing the beta
+## Field reports
 
-The beta needs confirmation on a real system. If you install it:
+These drivers have not yet been reported working on a real UniFi system. If you install them:
 
 1. Set the hub's **Log Level** to **Debug** (this also sets every camera's).
 2. Run **Add New Cameras**, then **Print Diagnostics** on the hub and **Test Picture** on one camera and one doorbell.
@@ -198,7 +200,7 @@ The beta needs confirmation on a real system. If you install it:
 
 Every line of the drivers starts with `UniFi Protect Hub:` or `UniFi Protect Camera '<name>':`. At *Debug* the log shows every API request (status and time), every WebSocket message, every picture request and every event. It never shows the API key, stream tokens or picture passwords. **Print Diagnostics** lists the console's Protect version, the API's answer for every camera (names, ids, models, kinds, streams, and the fields the console sends), the event connection and the last 10 events.
 
-**Not confirmed yet** (the reason this is a beta): pictures on touchscreens, the app and DirectorLink; live video over RTSP and RTSPS; alerts and doorbell rings from a real console. **Not expected to work yet:** live video and pictures away from home (over 4Sight), since the stream and picture addresses are the home network's; audio; PTZ.
+**Not confirmed on a real system yet:** pictures on touchscreens, the app and DirectorLink; live video over RTSP and RTSPS; alerts and doorbell rings from a real console. **Not expected to work yet:** live video and pictures away from home (over 4Sight), since the stream and picture addresses are the home network's; audio; PTZ.
 
 ## Privacy
 
@@ -252,7 +254,7 @@ The tests run the real driver code in Lua 5.1. The console is played by `fake_co
 **Rules for new versions**
 
 - `VERSION` is the only place the version is set.
-- **Never rename** the `.c4z` files, and **never change or remove** proxy binding ids, the order of variables, event and command ids, or property names. Dealers' projects (and DirectorLink) depend on them. Adding new ones is fine.
+- **Never rename** the `.c4z` files, and **never change or remove** proxy binding ids, the order of variables, event and command ids, or property names. Dealers' projects (and DirectorLink) depend on them. Adding new ones is fine, after the existing ones. If the ids of *Alert* (1) or *Ring* (2) ever change, `DIRECTORLINK_CAMERA_EVENTS` must say the new ones.
 - Update `VERSION`, `CHANGELOG.md`, the change log in both `www/documentation.html` files, and `docs/releases/v<version>.md`. Then tag `v<version>`: GitHub Actions tests, builds and publishes the release with `SHA256SUMS.txt` (a pre-release for `-beta` versions).
 
 ## License and trademarks

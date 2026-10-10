@@ -88,9 +88,13 @@ deliver()
 order = [list(x.values()) for x in cam.g.EVENT_VARS.values()]
 check(["Alert", "Person", None] in [[e[0], e[1], None] for e in order] and cam.var("LAST_ALERT") == "Person", "the camera: LAST_ALERT = Person, then Alert")
 check("Camera Alert" in hub.events() and hub.var("LAST_ALERT_CAMERA") == "Front Door", "the hub: Camera Alert from Front Door")
-ws_send(hub, 6101, {"type": "add", "item": {"id": "x2", "modelKey": "event", "type": "ring", "start": 1791230460000, "end": None, "device": CAM[2]}})
+import datetime
+import time
+press = int(time.time()) - 3
+ws_send(hub, 6101, {"type": "add", "item": {"id": "x2", "modelKey": "event", "type": "ring", "start": press * 1000, "end": None, "device": CAM[2]}})
 deliver()
-check("Ring" in cam.events() and cam.var("LAST_RING") == "2026-10-05T20:01:00Z", f"a ring: LAST_RING, then Ring ({cam.var('LAST_RING')})")
+press_iso = datetime.datetime.fromtimestamp(press, datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+check("Ring" in cam.events() and cam.var("LAST_RING") == press_iso, f"a ring: LAST_RING (the console's time of the press), then Ring ({cam.var('LAST_RING')})")
 check("Doorbell Ring" in hub.events() and hub.var("LAST_RING_CAMERA") == "Front Door", "the hub: Doorbell Ring")
 
 # the console goes away and comes back

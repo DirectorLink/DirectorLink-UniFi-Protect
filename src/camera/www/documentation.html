@@ -41,14 +41,14 @@
 <div class="hero">
   <img src="icons/camera_300.png" alt="">
   <div>
-    <h1>DirectorLink &middot; UniFi Protect Camera <span class="badge">BETA</span></h1>
+    <h1>DirectorLink &middot; UniFi Protect Camera</h1>
     <div class="tag">Free, open-source Control4 driver for UniFi Protect cameras and doorbells. Part of DirectorLink Drivers.</div>
     <p class="url">https://directorlink.io/drivers/unifi-protect</p>
     <p>One UniFi Protect camera or doorbell: pictures and live video on every touchscreen, smart detections, alerts and doorbell rings.</p>
   </div>
 </div>
 <main>
-<div class="links">Free. No subscription, no license key, no account with us. Downloads, updates and help: see the address above.</div>
+<div class="links">Free. No subscription, no license key, no account with us. Downloads, updates and help: see the address above.<br>DirectorLink is an independent project, not affiliated with Control4 or Snap One.</div>
 
 <h2>Setup</h2>
 <p class="note">Nothing to enter here. The <b>DirectorLink &middot; UniFi Protect</b> driver (the UniFi Protect Hub) adds this driver for each camera and doorbell and sets it up: run its <b>Add New Cameras</b>.</p>
@@ -65,7 +65,7 @@
   <tr><td>People and vehicles</td><td>Person, Face, Vehicle, License Plate</td></tr>
   <tr><td>People only</td><td>Person, Face</td></tr>
 </table>
-<p><b>Doorbells</b> (G4 Doorbell, G4 Doorbell Pro, G6 Entry) are cameras with a ring: each press sets <code>LAST_RING</code> and fires <i>Ring</i>, whatever the alert settings. <b>Camera Type</b> Automatic recognizes a doorbell from the console, or at its first ring.</p>
+<p><b>Doorbells</b> (G4 Doorbell, G4 Doorbell Pro, G6 Entry) are cameras with a ring: each press sets <code>LAST_RING</code> and fires <i>Ring</i>, whatever the alert settings. <b>Camera Type</b> Automatic recognizes a doorbell from the console, or at its first ring; with Camera Type <i>Camera</i> it never fires <i>Ring</i>.</p>
 
 <h2>Properties</h2>
 <table>
@@ -83,13 +83,14 @@
 <h3>Events</h3>
 <p>Alert, Ring, Motion Detected, Motion Ended, Person Detected, Vehicle Detected, Animal Detected, Package Detected, Face Detected, License Plate Detected, Line Crossing, Intrusion Detected, Sound Detected, Camera Online, Camera Offline, Alerts On, Alerts Off.</p>
 <h3>Variables</h3>
-<p><code>DIRECTORLINK_CAMERA</code>, <code>DIRECTORLINK_CAMERA_KIND</code>, <code>LAST_ALERT</code>, <code>LAST_RING</code>, <code>LAST_ALERT_TIME</code>, <code>LAST_DETECTION</code>, <code>LAST_SOUND</code> (STRING); <code>ONLINE</code>, <code>ALERTS_ENABLED</code>, <code>ALERT_ACTIVE</code>, <code>MOTION</code>, <code>PERSON</code>, <code>VEHICLE</code>, <code>ANIMAL</code>, <code>PACKAGE</code>, <code>FACE</code>, <code>LICENSE_PLATE</code>, <code>LINE_CROSSING</code>, <code>INTRUSION</code>, <code>RINGING</code> (BOOL). Times are ISO 8601 UTC, for example <code>2026-10-05T18:30:00Z</code>.</p>
+<p><code>DIRECTORLINK_CAMERA</code>, <code>DIRECTORLINK_CAMERA_KIND</code>, <code>DIRECTORLINK_CAMERA_EVENTS</code>, <code>LAST_ALERT</code>, <code>LAST_RING</code>, <code>LAST_ALERT_TIME</code>, <code>LAST_DETECTION</code>, <code>LAST_SOUND</code> (STRING); <code>ONLINE</code>, <code>ALERTS_ENABLED</code>, <code>ALERT_ACTIVE</code>, <code>MOTION</code>, <code>PERSON</code>, <code>VEHICLE</code>, <code>ANIMAL</code>, <code>PACKAGE</code>, <code>FACE</code>, <code>LICENSE_PLATE</code>, <code>LINE_CROSSING</code>, <code>INTRUSION</code>, <code>RINGING</code> (BOOL). Times are ISO 8601 UTC, for example <code>2026-10-05T18:30:00Z</code>.</p>
 <h3>Conditionals, commands, contacts</h3>
 <p>Camera is Online &middot; Alerts are On &middot; Alert is Active &middot; Motion is Active &middot; Active detection is &lt;type&gt; &middot; Last alert is &lt;type&gt; &middot; This camera is a Doorbell. Commands: <code>SET_ALERTS</code>, <code>SNOOZE_ALERTS</code>, <code>SET_ALERT_ON</code>. Contacts (Connections &rarr; Control): Alert, Motion, Person, Vehicle, Animal, Package, Doorbell.</p>
 
 <h2>Change log</h2>
 <table>
   <tr><th>Version</th><th>Changes</th></tr>
+  <tr><td>1.0.1</td><td>DirectorLink camera agreement: new variable DIRECTORLINK_CAMERA_EVENTS (Alert=1, or Alert=1,Ring=2 for a doorbell); a camera set to Camera Type Camera never fires Ring; every ring gets a new LAST_RING.</td></tr>
   <tr><td>1.0.0-beta.1</td><td>First release (beta).</td></tr>
 </table>
 

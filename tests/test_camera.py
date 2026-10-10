@@ -9,7 +9,7 @@ PROTECT_ID = "66f1a2b3c4d5e6f7081920a2"
 PIC_USER, PIC_PASS = "c4cam1a2b3c4d", "0123456789abcdef0123456789"
 STREAMS = {"HIGH": "rtsps://192.168.50.1:7441/HiTok3nQ8xZp2Lm?enableSrtp", "MEDIUM": "rtsps://192.168.50.1:7441/MedTok3nW4vB7nK?enableSrtp",
            "LOW": "rtsps://192.168.50.1:7441/LowTok3nR6tY9uP?enableSrtp", "LIVE_VIDEO": "RTSP"}
-T = 1791230400000
+T = (int(__import__("time").time()) - 20) * 1000  # a press 20 s ago (the console's clock agrees with the controller's)
 T_ISO = datetime.datetime.fromtimestamp(T // 1000, datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
@@ -58,8 +58,18 @@ def ui(d, cmd, params=None):
 # ---------------------------------------------------------------- a new camera
 d = started()
 check(d.var("DIRECTORLINK_CAMERA") == "1" and d.var("DIRECTORLINK_CAMERA_KIND") == "camera", "DirectorLink agreement: DIRECTORLINK_CAMERA = 1, kind camera")
-vars_order = [k for k in ("DIRECTORLINK_CAMERA", "DIRECTORLINK_CAMERA_KIND", "LAST_ALERT", "LAST_RING")]
-check(all(d.var(v) is not None for v in vars_order), "agreement variables exist")
+check(d.var("DIRECTORLINK_CAMERA_EVENTS") == "Alert=1", "a camera says the id of its Alert event: DIRECTORLINK_CAMERA_EVENTS = Alert=1")
+BETA_ORDER = ["DIRECTORLINK_CAMERA", "DIRECTORLINK_CAMERA_KIND", "LAST_ALERT", "LAST_RING", "LAST_ALERT_TIME", "LAST_DETECTION", "ONLINE",
+              "ALERTS_ENABLED", "ALERT_ACTIVE", "MOTION", "PERSON", "VEHICLE", "ANIMAL", "PACKAGE", "FACE", "LICENSE_PLATE", "LINE_CROSSING",
+              "INTRUSION", "RINGING", "LAST_SOUND"]
+order = list(d.g.VAR_ORDER.values())
+check(order == BETA_ORDER + ["DIRECTORLINK_CAMERA_EVENTS"], f"the 1.0.0-beta.1 variables keep their order; the new one comes last ({order[-2:]})")
+logged = list(d.g.VAR_LOG.values()) if d.g.VAR_LOG else []
+check(all(n in logged for n in ("DIRECTORLINK_CAMERA", "DIRECTORLINK_CAMERA_KIND", "DIRECTORLINK_CAMERA_EVENTS")),
+      "the agreement variables are written on every start (right after a driver update too)")
+import xml.etree.ElementTree as _ET
+_ids = {e.findtext("name"): e.findtext("id") for e in _ET.parse(__import__("os").path.join(__import__("harness").ROOT, "src", "camera", "driver.xml")).getroot().findall("events/event")}
+check(_ids["Alert"] == "1" and _ids["Ring"] == "2", "DIRECTORLINK_CAMERA_EVENTS matches the ids in driver.xml")
 check(any(c == "PROPERTY_DEFAULTS" and p.get("AUTHENTICATION_TYPE") == "BASIC" and p.get("RTSP_PORT") == "7447" for _, c, p in d.proxy()),
       "a new camera page starts with Basic login and RTSP port 7447")
 check(d.prop("Status").startswith("Waiting for the UniFi Protect Hub"), f"without a hub it says what to do ({d.prop('Status')})")
@@ -178,7 +188,7 @@ check(d.var("LAST_ALERT") == "Person", "several things in one event: the person 
 d.timers()
 # a short event that arrives already ended
 d.clear()
-event(d, "smartDetectZone", "ev11", "package", end=True, action="add")
+event(d, "smartDetectZone", "ev11", "package", end=True, action="add", start=int(__import__("time").time()) * 1000)
 check(d.events() == ["Package Detected", "Alert"] and d.var("LAST_ALERT") == "Package", "an event that arrives already finished still counts once")
 d.timers()
 check(d.var("PACKAGE") == "0", "and ends by itself")
@@ -223,12 +233,37 @@ d.call("ExecuteCommand", "SET_ALERTS", d.table({"State": "On"}))
 d2 = started()
 configure(d2, KIND="camera", NAME="Back Gate", PROTECT_ID="66f1a2b3c4d5e6f7081920a4")
 check(d2.var("DIRECTORLINK_CAMERA_KIND") == "camera", "Back Gate starts as a camera")
+check(d2.var("DIRECTORLINK_CAMERA_EVENTS") == "Alert=1", "a camera: DIRECTORLINK_CAMERA_EVENTS = Alert=1")
+d2.clear()
 event(d2, "ring", "r9")
 check(d2.var("DIRECTORLINK_CAMERA_KIND") == "doorbell" and d2.call("TestCondition", "IS_DOORBELL", d2.table({"VALUE": "Doorbell"})) is True,
       "the first ring makes it a doorbell")
+ring_vars = [list(x.values()) for x in d2.g.EVENT_VARS.values() if list(x.values())[0] == "Ring"]
+check(ring_vars and ring_vars[0][3] == "doorbell" and ring_vars[0][4] == "Alert=1,Ring=2",
+      "the kind and DIRECTORLINK_CAMERA_EVENTS = Alert=1,Ring=2 are set before that first Ring fires")
 d2.g.Properties["Camera Type"] = "Camera"
 d2.call("OnPropertyChanged", "Camera Type")
-check(d2.var("DIRECTORLINK_CAMERA_KIND") == "camera", "Camera Type overrides it")
+check(d2.var("DIRECTORLINK_CAMERA_KIND") == "camera" and d2.var("DIRECTORLINK_CAMERA_EVENTS") == "Alert=1", "Camera Type overrides it")
+d2.run("os.time = (function(real) return function(t) if t then return real(t) end return real() + 10 end end)(os.time)")
+d2.clear()
+event(d2, "ring", "r10")
+check("Ring" not in d2.events() and not d2.device_cmds("DL_CAMERA_RING"), "a driver whose kind is camera never fires Ring")
+d2.g.Properties["Camera Type"] = "Automatic"
+d2.call("OnPropertyChanged", "Camera Type")
+
+# every ring gets a new LAST_RING, later than the one before
+first_ring = d2.var("LAST_RING")
+d2.run("os.time = (function(real) return function(t) if t then return real(t) end return real() + 10 end end)(os.time)")
+event(d2, "ring", "r11", start=T)
+second = d2.var("LAST_RING")
+d2.run("os.time = (function(real) return function(t) if t then return real(t) end return real() + 10 end end)(os.time)")
+event(d2, "ring", "r12", start=T)
+third = d2.var("LAST_RING")
+check(first_ring < second < third, f"two presses the console stamps alike still get two LAST_RING values ({second} < {third})")
+d2.run("os.time = (function(real) return function(t) if t then return real(t) end return real() + 10 end end)(os.time)")
+event(d2, "ring", "r13", start=T - 3600 * 1000)
+now_iso = d2.eval('os.date("!%Y-%m-%dT%H:%M:%SZ", os.time())')
+check(d2.var("LAST_RING") == now_iso, f"a console clock an hour off: LAST_RING is the controller's time, as DirectorLink expects ({d2.var('LAST_RING')})")
 
 # sounds
 d.clear()
